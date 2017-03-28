@@ -1,0 +1,22 @@
+steps:
+# Build the pusher PAR file
+# TODO(mattmoor): Replace once this is merged:
+# https://github.com/GoogleCloudPlatform/cloud-builders/pull/29
+- name: gcr.io/convoy-adapter/builders/bazel
+  args: [
+    'build', '//:pusher.par',
+    # TODO(mattmoor): Remove once PAR compilation runs properly inside
+    # the Bazel sandbox on cloudbuild.
+    '--strategy', 'PythonCompile=standalone'
+  ]
+
+# Upload the pusher PAR file to a public GCS bucket
+- name: gcr.io/cloud-builders/gsutil
+  args: [
+    'cp',
+    'bazel-bin/pusher.par',
+    'gs://mattmoor-argo-test/$TAG_NAME/pusher.par'
+  ]
+
+# We produce no Docker images.
+images: []
