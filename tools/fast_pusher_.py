@@ -106,7 +106,7 @@ def main():
   creds = docker_creds.DefaultKeychain.Resolve(name)
 
   with docker_session.Push(name, creds, transport, threads=_THREADS) as session:
-    with v2_2_image.FromDisk(config, zip(args.digest, args.layer),
+    with v2_2_image.FromDisk(config, zip(args.digest or [], args.layer or []),
                              legacy_base=args.tarball) as v2_2_img:
       session.upload(v2_2_img)
 
